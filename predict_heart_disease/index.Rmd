@@ -7,6 +7,7 @@ framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
 highlighter : highlight.js  # {highlight.js, prettify, highlight}
 hitheme     : tomorrow      # 
 widgets     : []            # {mathjax, quiz, bootstrap}
+ext_widgets : {rCharts: [libraries/nvd3]}
 mode        : selfcontained # {standalone, draft}
 knit        : slidify::knit2slides
 ---
@@ -28,7 +29,7 @@ important risk factors
 
 ---
 
-## Risk factors
+## Risk factors (1)
 
 We took into account different features:
 + demographic
@@ -37,6 +38,40 @@ We took into account different features:
 + last blood test results
 
 ---
+
+## Most dangerous risk factors
+
+```{r echo = F, results = 'asis'}
+require(rCharts)
+load("framingham.Rdata") 
+framingham = na.omit(framingham)
+levels(framingham$TenYearCHD)[1]='No'
+levels(framingham$TenYearCHD)[2]='Yes'
+levels(framingham$male)[1]='Female'
+levels(framingham$male)[2]='Male'
+
+dataset = as.data.frame(table(framingham$TenYearCHD, framingham$cholBins))
+colnames(dataset)=c("CHD", "Cholesterol", "Freq")
+n1 = nPlot(Freq ~ Cholesterol,  group = "CHD", data = dataset,
+           type = "multiBarChart")
+
+# fram_chd_chol = as.data.frame(table(framingham$TenYearCHD, framingham$cholBins, framingham$male))
+# colnames(fram_chd_chol)=c("CHD", "Cholesterol", "Sex", "Freq")
+# 
+# n1 <- nPlot(Freq ~ CHD, group = "Cholesterol", data = fram_chd_chol, type = "multiBarChart")
+n1$print("chart1")
+
+
+# hair_eye_male <- subset(as.data.frame(HairEyeColor), Sex == "Male")
+# n1 <- nPlot(Freq ~ Hair, group = "Eye", data = hair_eye_male, type = "multiBarChart")
+# n1$print("chart3")
+
+
+```
+
+
+---
+
 
 ## Modeling CHD
 

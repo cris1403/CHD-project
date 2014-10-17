@@ -13,7 +13,9 @@
     media="only screen and (max-device-width: 480px)" >
   <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
   <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
-  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="libraries/widgets/nvd3/css/nv.d3.css"></link>
+<link rel=stylesheet href="libraries/widgets/nvd3/css/rNVD3.css"></link>
+<link rel=stylesheet href="./assets/css/ribbons.css"></link>
 
   
   <!-- Grab CDN jQuery, fall back to local if offline -->
@@ -23,7 +25,11 @@
     src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
   </script>
   
-  
+  <script src="libraries/widgets/nvd3/js/jquery-1.8.2.min.js"></script>
+<script src="libraries/widgets/nvd3/js/d3.v3.min.js"></script>
+<script src="libraries/widgets/nvd3/js/nv.d3.min-new.js"></script>
+<script src="libraries/widgets/nvd3/js/fisheye.js"></script>
+
 
 </head>
 <body style="opacity: 0">
@@ -63,7 +69,7 @@ important risk factors</p></li>
 
 <slide class="" id="slide-2" style="background:;">
   <hgroup>
-    <h2>Risk factors</h2>
+    <h2>Risk factors (1)</h2>
   </hgroup>
   <article data-timings="">
     <p>We took into account different features:</p>
@@ -80,6 +86,113 @@ important risk factors</p></li>
 </slide>
 
 <slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Most dangerous risk factors</h2>
+  </hgroup>
+  <article data-timings="">
+    <div id = 'chart1' class = 'rChart nvd3'></div>
+
+<script type='text/javascript'>
+ $(document).ready(function(){
+      drawchart1()
+    });
+    function drawchart1(){  
+      var opts = {
+ "dom": "chart1",
+"width":    800,
+"height":    400,
+"x": "Cholesterol",
+"y": "Freq",
+"group": "CHD",
+"type": "multiBarChart",
+"id": "chart1" 
+},
+        data = [
+ {
+ "CHD": "No",
+"Cholesterol": "Desiderable",
+"Freq": 687 
+},
+{
+ "CHD": "Yes",
+"Cholesterol": "Desiderable",
+"Freq": 78 
+},
+{
+ "CHD": "No",
+"Cholesterol": "High",
+"Freq": 1124 
+},
+{
+ "CHD": "Yes",
+"Cholesterol": "High",
+"Freq": 191 
+},
+{
+ "CHD": "No",
+"Cholesterol": "Very High",
+"Freq": 1290 
+},
+{
+ "CHD": "Yes",
+"Cholesterol": "Very High",
+"Freq": 288 
+} 
+]
+  
+      if(!(opts.type==="pieChart" || opts.type==="sparklinePlus" || opts.type==="bulletChart")) {
+        var data = d3.nest()
+          .key(function(d){
+            //return opts.group === undefined ? 'main' : d[opts.group]
+            //instead of main would think a better default is opts.x
+            return opts.group === undefined ? opts.y : d[opts.group];
+          })
+          .entries(data);
+      }
+      
+      if (opts.disabled != undefined){
+        data.map(function(d, i){
+          d.disabled = opts.disabled[i]
+        })
+      }
+      
+      nv.addGraph(function() {
+        var chart = nv.models[opts.type]()
+          .width(opts.width)
+          .height(opts.height)
+          
+        if (opts.type != "bulletChart"){
+          chart
+            .x(function(d) { return d[opts.x] })
+            .y(function(d) { return d[opts.y] })
+        }
+          
+         
+        
+          
+        
+
+        
+        
+        
+      
+       d3.select("#" + opts.id)
+        .append('svg')
+        .datum(data)
+        .transition().duration(500)
+        .call(chart);
+
+       nv.utils.windowResize(chart.update);
+       return chart;
+      });
+    };
+</script>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
   <hgroup>
     <h2>Modeling CHD</h2>
   </hgroup>
@@ -107,14 +220,20 @@ patients.</p>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=2 title='Risk factors'>
+        data-slide=2 title='Risk factors (1)'>
          2
       </a>
     </li>
     <li>
       <a href="#" target="_self" rel='tooltip' 
-        data-slide=3 title='Modeling CHD'>
+        data-slide=3 title='Most dangerous risk factors'>
          3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Modeling CHD'>
+         4
       </a>
     </li>
   </ul>
